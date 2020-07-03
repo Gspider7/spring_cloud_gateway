@@ -1,0 +1,33 @@
+server:
+  port: 8444
+  ssl:
+    key-store: classpath:keystore.p12
+    key-store-password: uqiansoft
+    keyStoreType: PKCS12
+    keyAlias: myalias
+
+spring:
+  application:
+    name: dataquality-gateway
+  profiles:
+    active: local
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  # 网关路由配置
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true                     # 是否启动默认路由规则：通过发现的服务id自动注册路由，默认为false
+      #          lower-case-service-id: true       # 是否通过小写服务id访问，开启以后服务id中不能有大写字符
+      # 全局路由配置
+      default-filters:
+      - name: Retry
+        args:
+          retries: 3                  # 重试次数，默认3
+          statusSeries: 500, 404      # 重试response code的系列，默认500
+logging:
+  config: classpath:log/logback-spring.xml
